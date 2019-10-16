@@ -1,0 +1,116 @@
+<!-- <div class="container"> -->
+  <p-toast [style]="{marginTop: '80px'}" styleClass="custom-toast" key="custom" position="bottom-center"></p-toast>
+
+  <p-dataView #dv [value]="allArticles" [lazy]='true' [paginator]="true" [alwaysShowPaginator]='true' [pageLinks]='5' [rows]="itemsPerPage/2" (onPage)='onPage()'  paginatorPosition="both"
+    filterBy="articleName" [sortField]="sortField" [sortOrder]="sortOrder" (menuEvent)='menuItems=$event.target'>
+
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <div class="ui-g">
+          <div class="ui-g-12 ui-md-4">
+            <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By"
+              (onChange)="onSortChange($event)" [style]="{'min-width':'140px'}"></p-dropdown>
+          </div>
+          <div class="ui-g-6 ui-md-4 filter-container">
+            <div style="position:relative">
+              <input type="search" pInputText placeholder="Search by Article" (keyup)="dv.filter($event.target.value)">
+            </div>
+          </div>
+          <div class="ui-g-6 ui-md-4" style="text-align:right">
+            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+          </div>
+        </div>
+      </div>
+    </p-header>
+
+    <ng-template let-allArticles pTemplate="listItem">
+      <div class="ui-g" style="padding: 2em;border-bottom: 1px solid #d9d9d9">
+        <div class="ui-g-12 ui-md-3" style="text-align:center">
+          <img src="assets/images/profile_img.jpg">
+        </div>
+        <div class="ui-g-12 ui-md-8 car-details">
+          <div class="ui-g">
+            <div class="ui-g-2 ui-sm-6">Name:</div>
+            <div class="ui-g-10 ui-sm-6"><b>{{allArticles.articleName}}</b></div>
+
+            <div class="ui-g-2 ui-sm-6">Category: </div>
+            <div class="ui-g-10 ui-sm-6"><b>{{allArticles.categoryName}}</b></div>
+
+            <div class="ui-g-2 ui-sm-6">Preview: </div>
+            <div class="ui-g-10 ui-sm-6"><b>{{allArticles.previewContent}}</b></div>
+
+            <div class="ui-g-2 ui-sm-6">Date: </div>
+            <div class="ui-g-10 ui-sm-6"><b>{{allArticles.createdDate}}</b></div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-1 search-icon">
+          <button pButton type="button" icon="pi pi-search" (click)="selectArticles($event, allArticles)"></button>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- GridView -->
+    <ng-template let-allArtilces pTemplate="gridItem">
+      <div style="padding:.5em" class="ui-g-12 ui-md-3">
+        <p-panel [header]="allArtilces.articleName" [style]="{'text-align':'center'}">
+          <img src="assets/images/profile_img.jpg">
+          <div class="car-detail">{{allArtilces.previewContent}} - {{allArtilces.createdDate}}</div>
+          <hr class="ui-widget-content" style="border-top:0">
+          <button pButton type="button" icon="pi pi-search" (click)="selectArticles($event, allArtilces)"
+            style="margin-top:0"></button>
+        </p-panel>
+      </div>
+    </ng-template>
+  </p-dataView>
+
+
+  <!-- popup for Article -->
+  <p-dialog header="Article" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
+    [style]="{width: '225px'}" (onAfterHide)="onDialogHide()">
+    <div class="ui-g" *ngIf="selectedArticle">
+      <div class="ui-g-12" style="text-align:center">
+        <img src="assets/images/profile_img.jpg">
+      </div>
+      <div class="ui-g-4">Name: </div>
+      <div class="ui-g-8">{{selectedArticle.articleName}}</div>
+
+      <div class="ui-g-4">Category: </div>
+      <div class="ui-g-8">{{selectedArticle.categoryName}}</div>
+
+      <div class="ui-g-4">Priview: </div>
+      <div class="ui-g-8">{{selectedArticle.previewContent}}</div>
+
+      <div class="ui-g-4">Date: </div>
+      <div class="ui-g-8">{{selectedArticle.createdDate}}</div>
+    </div>
+  </p-dialog>
+<!-- </div> -->
+
+<p-contextMenu [global]='true' [model]='menuItems' [target]='menuItems'></p-contextMenu>
+<p-dialog header="Form" [(visible)]="display" [responsive]='true' [style]="{width: '350px', minWidth: '200px'}">
+  <p-header> Add</p-header>
+    <form [formGroup]='addForm'>
+        <span class="ui-float-label">
+            <h1></h1>
+            <input type="text" id='float-input' size='20' pInputText formControlName='articleName'>
+            <label for="float-input">Name</label>
+          </span>
+          <h1></h1>
+          <span class="ui-float-label">
+            <!-- <input type="number" id='float-input' size='20' pInputText  formControlName='category'> -->
+            <!-- <label for="float-input">Category</label> -->
+            <p-dropdown [options]="arrCat" [(ngModel)]='selectedCategory' placeholder="Select a Category"  [showClear]="true" formControlName="categoryId" [optionLabel]='selectedCategory'></p-dropdown>
+            <!-- <div class="form-group">
+              <label>Category</label>
+              <select formControlName="categoryId" class='form-control' #cat required>
+                <option *ngFor="let val of arrCat " [value]='val.categoryId'>{{val.categoryName}}</option>
+              </select>
+
+            </div> -->
+          </span>
+    </form>
+  <p-footer>
+    <button type="submit" pButton icon="pi pi-check" (click)="onAdd()" label="Save"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="display=false" label="No" ></button>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,64 @@
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<p-table [columns]="colsArticle" [value]="allArticles" [(contextMenuSelection)]="selectedArticle" [contextMenu]="cm">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns">
+                {{col.header}}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pContextMenuRow]="rowData">
+            <td *ngFor="let col of columns">
+                {{rowData[col.field]}}
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-contextMenu #cm [model]="items"></p-contextMenu>
+<p-dialog header="Article" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
+[style]="{width: '225px'}">
+<div class="ui-g" *ngIf="selectedArticle">
+  <div class="ui-g-12" style="text-align:center">
+    <img src="assets/images/profile_img.jpg">
+  </div>
+  <div class="ui-g-4">Name: </div>
+  <div class="ui-g-8">{{selectedArticle.articleName}}</div>
+
+  <div class="ui-g-4">Category: </div>
+  <div class="ui-g-8">{{selectedArticle.categoryName}}</div>
+
+  <div class="ui-g-4">Priview: </div>
+  <div class="ui-g-8">{{selectedArticle.previewContent}}</div>
+
+  <div class="ui-g-4">Date: </div>
+  <div class="ui-g-8">{{selectedArticle.createdDate}}</div>
+</div>
+</p-dialog>
+
+
+
+<!-- edit and add popup -->
+
+<p-dialog header="Form" [(visible)]="display" [responsive]='true' [style]="{width: '350px', minWidth: '200px'}">
+  <p-header> Add</p-header>
+    <form [formGroup]='addEdit'>
+        <span class="ui-float-label">
+            <h1></h1>
+            <input type="text" id='float-input' size='20' pInputText formControlName='articleName'>
+            <label for="float-input">Name</label>
+          </span>
+          <h1></h1>
+          <span class="ui-float-label">
+            <p-dropdown [options]="arrCat"  placeholder="Select a Category"  [showClear]="true" formControlName="categoryId"></p-dropdown>
+          </span>
+          <p-editor formControlName='content' [style]="{'height':'320px'}"></p-editor>
+    </form>
+  <p-footer>
+    <button type="submit" pButton icon="pi pi-check" (click)="onSubmit()" label="Save"></button>
+    <button type="button" pButton icon="pi pi-close" (click)="display=false" label="No" ></button>
+  </p-footer>
+</p-dialog>
+<p-paginator [rows]='10' [totalRecords]='totalItems' [rowsPerPageOptions]="[10,20]" (onPageChange)='onPageChange([currentPage])' [currentPageReportTemplate]='currentPage' *ngIf="isPagination"></p-paginator>
